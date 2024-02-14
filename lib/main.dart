@@ -1,11 +1,16 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login/list_view_page.dart';
 import 'package:login/listpage.dart';
 import 'package:login/login.dart';
 import 'package:login/register.dart';
 import 'package:login/splash.dart';
+import 'package:login/utils/default_firebase_config.dart';
 
 void main() {
+  initialfirebase();
   runApp(MaterialApp(
     title: 'Flutter App!!',
     theme: ThemeData(
@@ -19,49 +24,65 @@ void main() {
       brightness: Brightness.dark,
     ),
     routes: {
-      '/':( context) => Splash(),
-      '/register':(context) =>Register(),
-      '/login':(context) => Login(),
-      '/listpage':(context) =>ListPage(),
-      '/listpageview':(context) =>ListPageView(),
+      '/': (context) => Splash(),
+      '/register': (context) => Register(),
+      '/login': (context) => Login(),
+      '/listpage': (context) => ListPage(),
+      '/listpageview': (context) => ListPageView(),
+      '/myapp': (context) => MyApp(),
     },
-    initialRoute: '/Splash' ,
+    initialRoute: '/Splash',
     debugShowCheckedModeBanner: false,
   ));
 }
 
-class MyApp extends StatelessWidget {
+void initialfirebase() async{
+  await Firebase.initializeApp(options:DefaultFirebaseOptions.web);
+
+  FirebaseAuth.instance.signInWithPhoneNumber('+9779812174843').then(
+          (value) => print("login sucessfulll")
+  ).catchError(
+      (error) => print(" auth error $error "),
+  );
+}
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int _currentIndex = 0;
+
+ final pages =[
+   Login(),
+   ListPage(),
+   ListPageView(),
+ ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('CSIT3rd'),
-        centerTitle: true,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index){setState(() {
+          _currentIndex=index;
+        });},
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), label: 'login'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite), label: 'favourite'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.next_plan), label: 'next'),
+          // BottomNavigationBarItem(
+          //     icon: Icon(Icons.mobile_friendly_sharp), label: 'settings'),
+          // BottomNavigationBarItem(
+          //     icon: Icon(Icons.settings), label: 'settings'),
+        ],
       ),
-      body: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed:()=> Navigator.of(context).pushNamed('/login') ,
-              child: Text('Login'),
-            ),
-            SizedBox(width: 30,),
-            ElevatedButton(
-              onPressed: ()=> Navigator.of(context).pushNamed('/register'),
-              child: Text('Register'),
-            ),
-            SizedBox(width: 30,),
-            ElevatedButton(
-              onPressed: ()=> Navigator.of(context).pushNamed('/listpage'),
-              child: Text('List page'),
-            ),
-          ],
-        ),
-      ),
+      body: pages.elementAt(_currentIndex),
     );
   }
 }

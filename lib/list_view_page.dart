@@ -31,20 +31,25 @@ class ListPageView extends StatelessWidget {
           ],
         ),
       ),
-      body: ListView.builder(
-        itemCount: movieList.length,
-          itemBuilder: (BuildContext context , int index){
-          final movieData = movieList[index];
+      body: Container(
+        height: 400,
+        child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: movieList.length,
+            itemBuilder: (BuildContext context , int index){
+            final movieData = movieList[index];
 
-            return ListTile(
-              leading: Icon(Icons.add),
-              title: Text(
-                movieData.title ?? 'title'
-              ),
-              subtitle: Text('\$ ${movieData.revenue} \M'),
-            );
+              return ListTile(
+                leading: Icon(Icons.add),
+                title: Text(
+                  movieData.title ?? 'title'
+                ),
+                subtitle: Text('\$ ${movieData.revenue} \M'),
+              );
 
-          },
+            },
+        ),
       ),
     );
   }
