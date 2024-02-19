@@ -1,7 +1,10 @@
 
+import 'dart:js';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:login/dashboard.dart';
 import 'package:login/list_view_page.dart';
 import 'package:login/listpage.dart';
 import 'package:login/login.dart';
@@ -10,6 +13,7 @@ import 'package:login/splash.dart';
 import 'package:login/utils/default_firebase_config.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   initialfirebase();
   runApp(MaterialApp(
     title: 'Flutter App!!',
@@ -30,20 +34,15 @@ void main() {
       '/listpage': (context) => ListPage(),
       '/listpageview': (context) => ListPageView(),
       '/myapp': (context) => MyApp(),
+      '/dashboard' :(context) => Dashboard(),
     },
-    initialRoute: '/Splash',
+    initialRoute: '/',
     debugShowCheckedModeBanner: false,
   ));
 }
 
 void initialfirebase() async{
   await Firebase.initializeApp(options:DefaultFirebaseOptions.web);
-
-  FirebaseAuth.instance.signInWithPhoneNumber('+9779812174843').then(
-          (value) => print("login sucessfulll")
-  ).catchError(
-      (error) => print(" auth error $error "),
-  );
 }
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

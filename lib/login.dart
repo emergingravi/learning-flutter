@@ -1,19 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login/service/firebase_auth_service.dart';
 
 class Login extends StatefulWidget {
   Login({super.key});
-
-  final _formkey = GlobalKey<FormState>();
-  final _Username = TextEditingController();
-  final _password = TextEditingController();
-
-
   @override
   State<Login> createState() => _loginState();
 }
 
 class _loginState extends State<Login> {
   bool? _isChecked = false;
+  final _formkey = GlobalKey<FormState>();
+  final _emailcontroller = TextEditingController();
+  final _passwordcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +31,7 @@ class _loginState extends State<Login> {
               ),
             ),
             Form(
-              key: widget._formkey,
+              key:_formkey,
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -40,9 +39,9 @@ class _loginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextFormField(
-                        controller: widget._Username,
+                        controller:_emailcontroller,
                         keyboardType: TextInputType.emailAddress,
-                        maxLength: 20,
+                        maxLength: 40,
                         decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -52,7 +51,7 @@ class _loginState extends State<Login> {
                         height: 10,
                       ),
                       TextFormField(
-                        controller: widget._password,
+                        controller:_passwordcontroller,
                         obscureText: true,
                         maxLength: 20,
                         keyboardType: TextInputType.visiblePassword,
@@ -93,45 +92,46 @@ class _loginState extends State<Login> {
                           FractionallySizedBox(
                             widthFactor: 0.3,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                if(_isChecked!=null){
+                                  if(_isChecked!){
+                                    final firebaseAuthService = FirebaseAuthService();
+                                    final email = _emailcontroller.text;
+                                    final password =_passwordcontroller.text;
+                                    final User? user = await firebaseAuthService.signInUserWithEmailAndPassword(email, password);
+
+                                    if (user!=null){
+                                      print("login success");
+                                    }
+                                    else{
+                                      print("login failure ");
+                                    }
+                                    Navigator.of(context).pushReplacementNamed('/dashboard');
+                                  }
+                                  else{
+                                    print('check once');
+                                  }
+                                }
+                              },
                               child: Text("login"),
                               style:ElevatedButton.styleFrom(
                                 backgroundColor:Colors.blue,
                               ),
                             ),
                           ),
-                          FractionallySizedBox(
-                            widthFactor: 0.3,
+    widthFactor: 0.3,
                             child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text("signup"),
+                              onPressed: () {
+                                Navigator.of(context).pushNamed('/register');
+                              },
+                              child: Text("register"),
                               style:ElevatedButton.styleFrom(
                                 backgroundColor:Colors.green,
                               ),
                             ),
                           ),
-                          FractionallySizedBox(
-                            widthFactor: 0.3,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text("reset"),
-                              style:ElevatedButton.styleFrom(
-                                backgroundColor:Colors.red,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
-                      ElevatedButton(onPressed: (){
-                        if(_isChecked!=null){
-                          if(_isChecked!){
-                            Navigator.of(context).pushNamed('/listviewpage');
-                          }
-                          else{
-                            print('check once');
-                          }
-                        }
-                      }, child: Text("listViewPage"),),
                     ],
                   ),
                 ),

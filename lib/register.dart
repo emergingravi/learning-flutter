@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login/service/firebase_auth_service.dart';
 
 class Register extends StatelessWidget {
   Register({super.key});
@@ -131,11 +132,11 @@ class Register extends StatelessWidget {
                   onPressed: (){
                     if (_formKey.currentState!=null){
                       if (_formKey.currentState!.validate()){
-                        print('The Enter First Name ${_fullNameController.text}');
-                        print('The email address is  ${_emailAddressController.text}');
-                        print('The Enter phone number ${_phoneNumberController.text}');
-                        print('The password is ${_passwordController.text}');
-                        print('The street address ${_streetAddressController.text}');
+                        final email =_emailAddressController.text;
+                        final password = _passwordController.text;
+
+                        final firebaseAuthService = FirebaseAuthService();
+                        firebaseAuthService.signUpUserWithEmailAndPassword(email, password);
                       }
                     }
                   },
@@ -144,11 +145,7 @@ class Register extends StatelessWidget {
                     child: Text('Submit',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
                   ),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
-
                 ),
-
-
-
               ],
             ),
           ),
