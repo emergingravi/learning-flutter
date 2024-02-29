@@ -1,13 +1,11 @@
 
-import 'dart:js';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login/dashboard.dart';
 import 'package:login/list_view_page.dart';
 import 'package:login/listpage.dart';
 import 'package:login/login.dart';
+import 'package:login/profil.dart';
 import 'package:login/register.dart';
 import 'package:login/splash.dart';
 import 'package:login/utils/default_firebase_config.dart';
@@ -35,6 +33,7 @@ void main() {
       '/listpageview': (context) => ListPageView(),
       '/myapp': (context) => MyApp(),
       '/dashboard' :(context) => Dashboard(),
+      '/profile' :(context) => Profile(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,

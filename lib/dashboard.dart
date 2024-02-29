@@ -1,19 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:login/service/firebase_auth_service.dart';
+import 'package:login/service/firebase_firestore_service.dart';
 
 class Dashboard extends StatelessWidget {
-  const Dashboard({super.key});
+  Dashboard({super.key});
+
+  List<dynamic> users = [];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext dashboardContext) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Dashboard"),
+        title: Text('Dashboard'),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              await showDialog(
+                  context: dashboardContext,
+                  builder: (BuildContext dialogContext) {
+                    return AlertDialog(
+                      icon: Icon(Icons.warning),
+                      title: Text('Signout !'),
+                      content: Text('Are you sure ?'),
+                      actions: [
+                        GestureDetector(
+                          child: Text('Yes'),
+                          onTap: () {
+                            final firebaseAuthService = FirebaseAuthService();
+                            firebaseAuthService.signOutUser();
+                            Navigator.of(dialogContext).pop();
+                            Navigator.of(dashboardContext)
+                                .pushReplacementNamed('/login');
+                          },
+                        ),
+                        GestureDetector(
+                          child: Text('No'),
+                          onTap: () {
+                            Navigator.of(dialogContext).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  });
+            },
+            child: Text('Signout'),
+          )
+        ],
       ),
-      body: Center(
-        child:ElevatedButton(
-          onPressed: (){},
-          child: Text("Sign out"),),
-      ),
+      body: FutureBuilder(
+          future: FirebaseFirestoreService().getAllUsersInACollection(),
+          builder: (context, snapShot) {
+            if (snapShot.hasError) {
+              return Center(
+                child: Icon(Icons.warning),
+              );
+            }
+            if (snapShot.connectionState == ConnectionState.done) {
+              if (snapShot.data != null) {
+                users = snapShot.data as List;
+                return Center(
+                  child: Text("the user is ${users[0]}"),
+                );
+              } else {
+                return Center(
+                  child: Icon(Icons.warning),
+                );
+              }
+            }
+            return SizedBox(
+              height: 50,
+              width: 50,
+              child: CircularProgressIndicator(),
+            );
+          }),
     );
   }
 }

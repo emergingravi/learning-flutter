@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 //this function is for creating a user in firebase using email and password
@@ -19,16 +20,25 @@ class FirebaseAuthService {
   Future<User?> signInUserWithEmailAndPassword(
       String email, String password) async {
     try {
-      UserCredential userCredential = await _auth
-          .signInWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       return userCredential.user;
     } catch (e) {
       print("something went wrong $e");
       return null;
     }
   }
+
   //this function is for logout user from firebase
-  void signOutUser()async{
-    await _auth.signOut();
+  void signOutUser() async {
+    try {
+      await _auth.signOut();
+    } catch(e){
+      print("error signing out :: "+ e.toString());
+    }
+  }
+  Future<User?>getLogggedInUser()async{
+    User? user = await _auth.authStateChanges().first;
+    return user;
   }
 }

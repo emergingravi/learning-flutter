@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login/service/firebase_auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   Login({super.key});
@@ -13,6 +14,32 @@ class _loginState extends State<Login> {
   final _formkey = GlobalKey<FormState>();
   final _emailcontroller = TextEditingController();
   final _passwordcontroller = TextEditingController();
+
+  @override
+  void initState() {
+    print('init state called');
+    checkedLoggedInUser();
+    super.initState();
+  }
+
+  //this function is used to check if the user is already logged in or not ,
+  //if the user is already logged in then firebase session exists ans user object is not null
+  //else user object is null so it says in login page itself and user has to login with credentials
+  void checkedLoggedInUser()async{
+    final firebaseAuthService = FirebaseAuthService();
+    final user = await firebaseAuthService.getLogggedInUser();
+    if(User!=Null){
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // await prefs.setString('uId',user.uId);
+      // await prefs.setString('uId',user.uId);
+      // await prefs.setString('uId',user.uId);
+      print('user is signed in');
+      Navigator.of(context).pushNamed('/profile');
+    }
+    else{
+      print('user is logged out');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,13 +49,13 @@ class _loginState extends State<Login> {
         ),
         body: Stack(
           children: [
-            Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage('https://t3.ftcdn.net/jpg/03/55/60/70/240_F_355607062_zYMS8jaz4SfoykpWz5oViRVKL32IabTP.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
+            Container(color: Colors.lightGreen,
+              // decoration: const BoxDecoration(
+              //   image: DecorationImage(
+              //     image: NetworkImage('https://t3.ftcdn.net/jpg/03/55/60/70/240_F_355607062_zYMS8jaz4SfoykpWz5oViRVKL32IabTP.jpg'),
+              //     fit: BoxFit.cover,
+              //   ),
+              // ),
             ),
             Form(
               key:_formkey,
@@ -45,7 +72,7 @@ class _loginState extends State<Login> {
                         decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            border: OutlineInputBorder(), labelText: "username "),
+                            border: OutlineInputBorder(), labelText: "email "),
                       ),
                       SizedBox(
                         height: 10,
@@ -79,7 +106,6 @@ class _loginState extends State<Login> {
                               },
                             ),
                           ),
-
                           FractionallySizedBox(
                               widthFactor: 0.9,
                               child: Text("Agree to all the terms and condition of the company ? if any querry contact us ...",))
@@ -119,7 +145,8 @@ class _loginState extends State<Login> {
                               ),
                             ),
                           ),
-    widthFactor: 0.3,
+                          FractionallySizedBox(
+                            widthFactor: 0.3,
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).pushNamed('/register');
