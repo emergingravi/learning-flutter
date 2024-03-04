@@ -1,50 +1,94 @@
 import 'package:flutter/material.dart';
+import 'package:login/service/firebase_firestore_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  late String uid = "";
+  @override
+  void initState() {
+    getUserUidFromSharedPrefences();
+    super.initState();
+  }
+
+  void getUserUidFromSharedPrefences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? id = prefs.getString('userId');
+    setState(() {
+      uid = id ?? '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.blueGrey,
       appBar: AppBar(
         title: Text('View Profile'),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: ListView(
-          children: [
-            ProfileImage(),
-            SizedBox(
-              height: 20,
-            ),
-            BasicDetails(),
-            SizedBox(
-              height: 20,
-            ),
-            MenuWidgets(
-              title: 'Settings',
-              onPressed: (){
-                print('Settings Clicked');
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            MenuWidgets(
-              title: 'Notifications',
-              onPressed: (){
-                print('Notifications Clicked');
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            MenuWidgets(
-              title: 'About App',
-            ),
-          ],
-        ),
+        child: (uid.isNotEmpty)
+            ? FutureBuilder(
+                future: FirebaseFirestoreService()
+                    .getUserDetailsFromUseruId(uId: uid),
+                builder: (context, snapshot) {
+                  //if connection is established but  firebase returns an error
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text("error loading profile"),
+                      );
+                    }
+                    //if connection is established and firebase returns data
+                    if (snapshot.hasData) {
+                      return ListView(
+                        children: [
+                          ProfileImage(),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          BasicDetails(),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          MenuWidgets(
+                            title: 'Settings',
+                            onPressed: () {
+                              print('Settings Clicked');
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          MenuWidgets(
+                            title: 'Notifications',
+                            onPressed: () {
+                              print('Notifications Clicked');
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          MenuWidgets(
+                            title: 'About App',
+                          ),
+                        ],
+                      );
+                    }
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                })
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
       ),
     );
   }
@@ -58,7 +102,7 @@ class ProfileImage extends StatelessWidget {
       height: 100,
       width: 100,
       child: CircleAvatar(
-        backgroundImage: AssetImage('assets/pics/profile.jpg'),
+        backgroundImage: AssetImage('assets/images/profile.jpg'),
       ),
     );
   }

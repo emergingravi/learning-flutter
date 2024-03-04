@@ -10,18 +10,18 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   @override
   void initState(){
-    Timer(Duration(seconds: 4),() => Navigator.of(context).pushReplacementNamed('/login'));
+    Timer(Duration(seconds: 4),() => Navigator.of(context).pushReplacementNamed('/profile'));
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.lightGreen,
+        color: Colors.blueGrey,
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 500,),
+              SizedBox(height: 400,),
               Image.asset("assets/images/bubble.gif" , height:100,width:100,),
               Text("Apify" , style: TextStyle(fontSize:23,fontWeight: FontWeight.w700),)
             ],

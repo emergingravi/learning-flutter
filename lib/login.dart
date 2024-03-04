@@ -28,13 +28,11 @@ class _loginState extends State<Login> {
   void checkedLoggedInUser()async{
     final firebaseAuthService = FirebaseAuthService();
     final user = await firebaseAuthService.getLogggedInUser();
-    if(User!=Null){
-      // final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // await prefs.setString('uId',user.uId);
-      // await prefs.setString('uId',user.uId);
-      // await prefs.setString('uId',user.uId);
-      print('user is signed in');
-      Navigator.of(context).pushNamed('/profile');
+    if(user!=null){
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+       await prefs.setString('userId',user.uid);
+       Navigator.of(context).pushNamed('/profile');
+       print('user is signed in');
     }
     else{
       print('user is logged out');
@@ -49,7 +47,7 @@ class _loginState extends State<Login> {
         ),
         body: Stack(
           children: [
-            Container(color: Colors.lightGreen,
+            Container(color: Colors.blueGrey,
               // decoration: const BoxDecoration(
               //   image: DecorationImage(
               //     image: NetworkImage('https://t3.ftcdn.net/jpg/03/55/60/70/240_F_355607062_zYMS8jaz4SfoykpWz5oViRVKL32IabTP.jpg'),
@@ -71,7 +69,7 @@ class _loginState extends State<Login> {
                         maxLength: 40,
                         decoration: InputDecoration(
                             filled: true,
-                            fillColor: Colors.white,
+                            fillColor: Colors.black45,
                             border: OutlineInputBorder(), labelText: "email "),
                       ),
                       SizedBox(
@@ -81,11 +79,14 @@ class _loginState extends State<Login> {
                         controller:_passwordcontroller,
                         obscureText: true,
                         maxLength: 20,
+
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(), labelText: "password"),
+                          filled: true,
+                          fillColor: Colors.black45,
+                          border: OutlineInputBorder(),
+                          labelText: "Password",
+                        ),
                       ),
                       SizedBox(
                         height: 1,
@@ -132,7 +133,7 @@ class _loginState extends State<Login> {
                                     else{
                                       print("login failure ");
                                     }
-                                    Navigator.of(context).pushReplacementNamed('/dashboard');
+                                    Navigator.of(context).pushReplacementNamed('/profile');
                                   }
                                   else{
                                     print('check once');
