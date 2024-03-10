@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login/service/firebase_auth_service.dart';
+import 'package:login/service/firebase_firestore_service.dart';
 
 import 'model/user_model.dart';
 
@@ -178,7 +179,7 @@ class _RegisterState extends State<Register> {
                         User? user = await firebaseAuthService.signUpUserWithEmailAndPassword(
                             email, password);
                         if(user != null){
-                          final User = UserModel(
+                          final userModel = UserModel(
                             uId:user.uid,
                             fullname:_fullNameController.text,
                             emailaddress:_emailAddressController.text,
@@ -186,6 +187,7 @@ class _RegisterState extends State<Register> {
                             address:_streetAddressController.text,
                             gender:gender,
                           );
+                          FirebaseFirestoreService().signUpUser(userModel: userModel);
                           Navigator.of(context).pushReplacementNamed('/login');
                         }
                         else{

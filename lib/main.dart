@@ -8,6 +8,7 @@ import 'package:login/login.dart';
 import 'package:login/profil.dart';
 import 'package:login/register.dart';
 import 'package:login/splash.dart';
+import 'package:login/users_list.dart';
 import 'package:login/utils/default_firebase_config.dart';
 
 void main() {
@@ -34,6 +35,7 @@ void main() {
       '/myapp': (context) => MyApp(),
       '/dashboard' :(context) => Dashboard(),
       '/profile' :(context) => Profile(),
+      '/userslist' :(context) => UsersList(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,

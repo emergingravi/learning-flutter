@@ -43,8 +43,8 @@ class FirebaseFirestoreService {
       CollectionReference _userCollection =
           await firebaseFireStore.collection('users');
       await _userCollection
-          .add(userModel.toJson)
-          .whenComplete(() => print('User Created sucessfull !'));
+          .add(userModel.toJson())
+          .whenComplete(() => print('User Created successfull !'));
     } catch (e) {
       print('something went wrong\n ');
     }
@@ -55,16 +55,37 @@ class FirebaseFirestoreService {
       CollectionReference _userCollection =
           await firebaseFireStore.collection('users');
       final documentSnapshot =
-          await _userCollection.where('id', isEqualTo: uId).get();
+          await _userCollection.where('userId', isEqualTo: uId).get();
       if (documentSnapshot.docs.isNotEmpty) {
-        final userModel =  documentSnapshot.docs.map((doc) => UserModel.fromJson(doc as QueryDocumentSnapshot<Map<String, dynamic>>)).first;
+        final userModel = documentSnapshot.docs
+            .map((doc) => UserModel.fromJson(
+                doc as QueryDocumentSnapshot<Map<String, dynamic>>))
+            .first;
         return userModel;
-      }else{
+      } else {
         print('document not found');
       }
     } catch (e) {
       print('something went wrong');
     }
     return null;
+  }
+
+  //function to get all the userd from database
+  Future<List<UserModel>> getAllUsersFromDatabase() async {
+    try {
+      CollectionReference _usersCollection =
+          await firebaseFireStore.collection("users");
+      final snapshot = await _usersCollection.get();
+
+      final usersList = snapshot.docs
+          .map((doc) => UserModel.fromJson(
+              doc as QueryDocumentSnapshot<Map<String, dynamic>>))
+          .toList();
+      return usersList;
+    } catch (e) {
+      print("something went wrong while fetching multiple users details");
+    }
+    return [];
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login/model/user_model.dart';
 import 'package:login/service/firebase_firestore_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +22,7 @@ class _ProfileState extends State<Profile> {
     String? id = prefs.getString('userId');
     setState(() {
       uid = id ?? '';
+      print('The user uid is $uid');
     });
   }
 
@@ -30,6 +32,12 @@ class _ProfileState extends State<Profile> {
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(
         title: Text('View Profile'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.people),
+            onPressed: () => Navigator.of(context).pushNamed('userslist'),
+          )
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -47,13 +55,16 @@ class _ProfileState extends State<Profile> {
                     }
                     //if connection is established and firebase returns data
                     if (snapshot.hasData) {
+                      final userModel = snapshot.data;
                       return ListView(
                         children: [
                           ProfileImage(),
                           SizedBox(
                             height: 20,
                           ),
-                          BasicDetails(),
+                          BasicDetails(
+                            userModel: userModel,
+                          ),
                           SizedBox(
                             height: 20,
                           ),
@@ -99,8 +110,8 @@ class ProfileImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100,
-      width: 100,
+      height: 200,
+      width: 200,
       child: CircleAvatar(
         backgroundImage: AssetImage('assets/images/profile.jpg'),
       ),
@@ -110,14 +121,18 @@ class ProfileImage extends StatelessWidget {
 
 ///This is the widget for displaying the basic details of the user
 class BasicDetails extends StatelessWidget {
+  BasicDetails({required this.userModel});
+
+  final UserModel? userModel;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black45,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.black.withOpacity(0.5),
             spreadRadius: 5,
             blurRadius: 7,
             offset: Offset(
@@ -133,23 +148,33 @@ class BasicDetails extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Name: '),
+          (userModel != null)
+              ? Text('Name: ${userModel!.fullname}')
+              : Text('name: -'),
           SizedBox(
             height: 5,
           ),
-          Text('Email: '),
+          (userModel != null)
+              ? Text('Email: ${userModel!.emailaddress}')
+              : Text('email: '),
           SizedBox(
             height: 5,
           ),
-          Text('Phone: '),
+          (userModel != null)
+              ? Text('Phone: ${userModel!.phoneNumber}')
+              : Text("phone : "),
           SizedBox(
             height: 5,
           ),
-          Text('Address: '),
+          (userModel != null)
+              ? Text('Address: ${userModel!.address}')
+              : Text("address: "),
           SizedBox(
             height: 5,
           ),
-          Text('Gender: '),
+          (userModel != null)
+              ? Text('Gender: ${userModel!.gender}')
+              : Text("gender: "),
         ],
       ),
     );
@@ -170,10 +195,10 @@ class MenuWidgets extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.black45,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
+              color: Colors.black.withOpacity(0.5),
               spreadRadius: 5,
               blurRadius: 7,
               offset: Offset(

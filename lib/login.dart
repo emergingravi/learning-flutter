@@ -18,7 +18,7 @@ class _loginState extends State<Login> {
   @override
   void initState() {
     print('init state called');
-    checkedLoggedInUser();
+    //checkedLoggedInUser();
     super.initState();
   }
 
@@ -128,6 +128,8 @@ class _loginState extends State<Login> {
                                     final User? user = await firebaseAuthService.signInUserWithEmailAndPassword(email, password);
 
                                     if (user!=null){
+                                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      await prefs.setString('userId',user.uid);
                                       print("login success");
                                     }
                                     else{
