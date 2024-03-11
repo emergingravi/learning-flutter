@@ -19,11 +19,11 @@ class UserModel{
 
   toJson(){
   return{
-    'fullname' :fullname,
-    'emailAddress':emailaddress,
+    'full_name' :fullname,
+    'email_address':emailaddress,
     'gender':gender,
     'address' :address,
-    'phonenumber':phoneNumber,
+    'phone_number':phoneNumber,
     'userId':uId,
   };
   }
@@ -32,11 +32,11 @@ class UserModel{
       QueryDocumentSnapshot<Map<String, dynamic>> document) {
     final userData = document.data();
     return UserModel(
-      fullname: userData['fullname'],
-      phoneNumber: userData['phoneNumber'],
+      fullname: userData['full_name'],
+      phoneNumber: userData['phone_number'],
       address: userData['address'],
       gender: userData['gender'],
-      emailaddress: userData['emailAddress'],
+      emailaddress: userData['email_address'],
 
     );}
 }

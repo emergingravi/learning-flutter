@@ -2,6 +2,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login/dashboard.dart';
+import 'package:login/edit_profile.dart';
 import 'package:login/list_view_page.dart';
 import 'package:login/listpage.dart';
 import 'package:login/login.dart';
@@ -36,6 +37,7 @@ void main() {
       '/dashboard' :(context) => Dashboard(),
       '/profile' :(context) => Profile(),
       '/userslist' :(context) => UsersList(),
+      '/edit_profile' :(context) => EditProfile(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,

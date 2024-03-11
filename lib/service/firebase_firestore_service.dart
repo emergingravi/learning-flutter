@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../model/user_model.dart';
 
@@ -57,10 +58,10 @@ class FirebaseFirestoreService {
       final documentSnapshot =
           await _userCollection.where('userId', isEqualTo: uId).get();
       if (documentSnapshot.docs.isNotEmpty) {
-        final userModel = documentSnapshot.docs
+        final userModel =  await documentSnapshot.docs
             .map((doc) => UserModel.fromJson(
                 doc as QueryDocumentSnapshot<Map<String, dynamic>>))
-            .first;
+            .single;
         return userModel;
       } else {
         print('document not found');
@@ -87,5 +88,29 @@ class FirebaseFirestoreService {
       print("something went wrong while fetching multiple users details");
     }
     return [];
+  }
+
+  ///function to update userdetails in firestoreDB
+  Future<UserModel?> updateUserDetailsUsingUID(
+      {required String uId, required UserModel userModel}) async {
+    try {
+      CollectionReference _usersCollection =
+          await firebaseFireStore.collection("users");
+      final snapshot = await _usersCollection.get();
+      if (snapshot.docs.isNotEmpty) {
+        final documentId = snapshot.docs.first.id;
+        _usersCollection.doc(documentId).update(userModel.toJson());
+        final userModelUpdated = await snapshot.docs
+            .map((doc) => UserModel.fromJson(
+            doc as QueryDocumentSnapshot<Map<String, dynamic>>))
+            .single;
+        return userModelUpdated;
+      }else{
+        return null;
+      }
+    } catch (e) {
+      print("something went wrong");
+    }
+    return null;
   }
 }

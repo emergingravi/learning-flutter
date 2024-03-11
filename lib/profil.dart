@@ -35,7 +35,7 @@ class _ProfileState extends State<Profile> {
         actions: [
           IconButton(
             icon: Icon(Icons.people),
-            onPressed: () => Navigator.of(context).pushNamed('userslist'),
+            onPressed: () => Navigator.of(context).pushNamed('/userslist'),
           )
         ],
       ),
@@ -175,6 +175,13 @@ class BasicDetails extends StatelessWidget {
           (userModel != null)
               ? Text('Gender: ${userModel!.gender}')
               : Text("gender: "),
+          SizedBox(
+            height: 5,
+
+          ),
+          ElevatedButton(
+              onPressed: () => Navigator.of(context).pushNamed('/edit_profile',arguments:userModel),
+              child: Text("edit profile"),)
         ],
       ),
     );

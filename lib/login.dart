@@ -18,7 +18,7 @@ class _loginState extends State<Login> {
   @override
   void initState() {
     print('init state called');
-    //checkedLoggedInUser();
+    checkedLoggedInUser();
     super.initState();
   }
 
