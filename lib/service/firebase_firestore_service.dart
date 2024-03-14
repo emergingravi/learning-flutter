@@ -72,7 +72,7 @@ class FirebaseFirestoreService {
     return null;
   }
 
-  //function to get all the userd from database
+  ///function to get all the user from database
   Future<List<UserModel>> getAllUsersFromDatabase() async {
     try {
       CollectionReference _usersCollection =
@@ -85,7 +85,7 @@ class FirebaseFirestoreService {
           .toList();
       return usersList;
     } catch (e) {
-      print("something went wrong while fetching multiple users details");
+      print("error in getalluserfrom database function");
     }
     return [];
   }
@@ -112,5 +112,28 @@ class FirebaseFirestoreService {
       print("something went wrong");
     }
     return null;
+  }
+  ///delete user from the database
+  Future<List<UserModel>> deleteUserFromFirebaseUsingUID({required String uId})async{
+    try{
+      CollectionReference _usersCollection = await firebaseFireStore.collection("users");
+      final snapshot = await _usersCollection.where('userId', isEqualTo: uId).get();
+      if(snapshot.docs.isNotEmpty){
+        final documentId= snapshot.docs.first.id;
+        await _usersCollection.doc(documentId).delete();
+        final usersList = snapshot.docs
+            .map((doc) => UserModel.fromJson(
+            doc as QueryDocumentSnapshot<Map<String, dynamic>>))
+            .toList();
+        return usersList;
+      }
+      else{
+        print('error from delete function');
+      }
+    }
+    catch(e){
+      print('error from delete user function');
+    }
+    return [];
   }
 }

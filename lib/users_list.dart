@@ -54,49 +54,89 @@ class BasicDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black45,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: Offset(
-              0,
-              3,
-            ), // changes position of shadow
-          ),
-        ],
-      ),
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Stack(
         children: [
-          (userModel!=null)?
-          Text('Name: ${userModel!.fullname}'): Text('name: -'),
-          SizedBox(
-            height: 5,
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black45,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(
+                    0,
+                    3,
+                  ), // changes position of shadow
+                ),
+              ],
+            ),
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                (userModel!=null)?
+                Text('Name: ${userModel!.fullname}'): Text('name: -'),
+                SizedBox(
+                  height: 5,
+                ),
+                (userModel!=null)?
+                Text('Email: ${userModel!.emailaddress}'): Text('email: '),
+                SizedBox(
+                  height: 5,
+                ),
+                (userModel!=null)?
+                Text('Phone: ${userModel!.phoneNumber}'):Text("phone : "),
+                SizedBox(
+                  height: 5,
+                ),
+                (userModel!=null)?
+                Text('Address: ${userModel!.address}'): Text("address: "),
+                SizedBox(
+                  height: 5,
+                ),
+                (userModel!=null)?
+                Text('Gender: ${userModel!.gender}'):Text("gender: "),
+              ],
+            ),
           ),
-          (userModel!=null)?
-          Text('Email: ${userModel!.emailaddress}'): Text('email: '),
-          SizedBox(
-            height: 5,
+          Positioned(
+            right: 0,
+            child: IconButton(
+              icon: Icon(Icons.cancel , color: Colors.red,),
+              onPressed: ()async{
+            showDialog(context: context, builder: (dialogContext){
+              return AlertDialog(
+                icon:Icon(Icons.warning),
+                title: Text('delete user'),
+                content: Text('are you sure'),
+                actions: [
+                  TextButton(onPressed: ()async{
+                    final firebaseFirestoreService = FirebaseFirestoreService();
+                    if (userModel!=null){
+                      if(userModel!.uId !=null){
+                        await firebaseFirestoreService.deleteUserFromFirebaseUsingUID(uId:userModel!.uId!);
+                      }
+                    }
+                    Navigator.of(dialogContext).pop();
+                  }, child: Text('YES'),),
+                  TextButton(onPressed: (){Navigator.of(dialogContext).pop();}, child: Text('NO'),),
+                ],
+              );
+            });
+            final firebaseFirestoreService = FirebaseFirestoreService();
+                if (userModel!=null){
+                  if(userModel!.uId !=null){
+                    await firebaseFirestoreService.deleteUserFromFirebaseUsingUID(uId:userModel!.uId!);
+                  }
+                }
+              },
+            ),
           ),
-          (userModel!=null)?
-          Text('Phone: ${userModel!.phoneNumber}'):Text("phone : "),
-          SizedBox(
-            height: 5,
-          ),
-          (userModel!=null)?
-          Text('Address: ${userModel!.address}'): Text("address: "),
-          SizedBox(
-            height: 5,
-          ),
-          (userModel!=null)?
-          Text('Gender: ${userModel!.gender}'):Text("gender: "),
         ],
       ),
     );

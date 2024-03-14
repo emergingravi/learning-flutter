@@ -21,9 +21,9 @@ class _SplashState extends State<Splash> {
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 400,),
+              SizedBox(height: 350,),
               Image.asset("assets/images/bubble.gif" , height:100,width:100,),
-              Text("Apify" , style: TextStyle(fontSize:23,fontWeight: FontWeight.w700),)
+              Text("Test App" , style: TextStyle(fontSize:23,fontWeight: FontWeight.w700),)
             ],
           ),
         ),
