@@ -15,12 +15,12 @@ class _loginState extends State<Login> {
   final _emailcontroller = TextEditingController();
   final _passwordcontroller = TextEditingController();
 
-  @override
-  void initState() {
-    print('init state called');
-    checkedLoggedInUser();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   print('init state called');
+  //   checkedLoggedInUser();
+  //   super.initState();
+  // }
 
   //this function is used to check if the user is already logged in or not ,
   //if the user is already logged in then firebase session exists ans user object is not null
@@ -30,7 +30,7 @@ class _loginState extends State<Login> {
     final user = await firebaseAuthService.getLogggedInUser();
     if(user!=null){
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-       await prefs.setString('userId',user.uid);
+       await prefs.setString('x',user.uid);
        Navigator.of(context).pushNamed('/profile');
        print('user is signed in');
     }
@@ -135,7 +135,7 @@ class _loginState extends State<Login> {
                                     else{
                                       print("login failure ");
                                     }
-                                    Navigator.of(context).pushReplacementNamed('/profile');
+                                    Navigator.of(context).pushReplacementNamed('/dashboard');
                                   }
                                   else{
                                     print('check once');

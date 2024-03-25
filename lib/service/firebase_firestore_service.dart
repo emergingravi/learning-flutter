@@ -42,7 +42,7 @@ class FirebaseFirestoreService {
   void signUpUser({required UserModel userModel}) async {
     try {
       CollectionReference _userCollection =
-          await firebaseFireStore.collection('users');
+          firebaseFireStore.collection('users');
       await _userCollection
           .add(userModel.toJson())
           .whenComplete(() => print('User Created successfull !'));
@@ -58,7 +58,7 @@ class FirebaseFirestoreService {
       final documentSnapshot =
           await _userCollection.where('userId', isEqualTo: uId).get();
       if (documentSnapshot.docs.isNotEmpty) {
-        final userModel =  await documentSnapshot.docs
+        final userModel = await documentSnapshot.docs
             .map((doc) => UserModel.fromJson(
                 doc as QueryDocumentSnapshot<Map<String, dynamic>>))
             .single;
@@ -102,10 +102,10 @@ class FirebaseFirestoreService {
         _usersCollection.doc(documentId).update(userModel.toJson());
         final userModelUpdated = await snapshot.docs
             .map((doc) => UserModel.fromJson(
-            doc as QueryDocumentSnapshot<Map<String, dynamic>>))
+                doc as QueryDocumentSnapshot<Map<String, dynamic>>))
             .single;
         return userModelUpdated;
-      }else{
+      } else {
         return null;
       }
     } catch (e) {
@@ -113,25 +113,27 @@ class FirebaseFirestoreService {
     }
     return null;
   }
+
   ///delete user from the database
-  Future<List<UserModel>> deleteUserFromFirebaseUsingUID({required String uId})async{
-    try{
-      CollectionReference _usersCollection = await firebaseFireStore.collection("users");
-      final snapshot = await _usersCollection.where('userId', isEqualTo: uId).get();
-      if(snapshot.docs.isNotEmpty){
-        final documentId= snapshot.docs.first.id;
+  Future<List<UserModel>> deleteUserFromFirebaseUsingUID(
+      {required String uId}) async {
+    try {
+      CollectionReference _usersCollection =
+          await firebaseFireStore.collection("users");
+      final snapshot =
+          await _usersCollection.where('userId', isEqualTo: uId).get();
+      if (snapshot.docs.isNotEmpty) {
+        final documentId = snapshot.docs.first.id;
         await _usersCollection.doc(documentId).delete();
         final usersList = snapshot.docs
             .map((doc) => UserModel.fromJson(
-            doc as QueryDocumentSnapshot<Map<String, dynamic>>))
+                doc as QueryDocumentSnapshot<Map<String, dynamic>>))
             .toList();
         return usersList;
-      }
-      else{
+      } else {
         print('error from delete function');
       }
-    }
-    catch(e){
+    } catch (e) {
       print('error from delete user function');
     }
     return [];

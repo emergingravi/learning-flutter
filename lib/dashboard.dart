@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:login/controller/counter_controller.dart';
 import 'package:login/service/firebase_auth_service.dart';
 import 'package:login/service/firebase_firestore_service.dart';
 
@@ -9,6 +11,8 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext dashboardContext) {
+    Get.put(CounterController());
+    final CounterController counterController = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: Text('Dashboard'),
@@ -47,32 +51,49 @@ class Dashboard extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder(
-          future: FirebaseFirestoreService().getAllUsersInACollection(),
-          builder: (context, snapShot) {
-            if (snapShot.hasError) {
-              return Center(
-                child: Icon(Icons.warning),
-              );
+      body: Column(
+        children: [
+          Obx(
+             () {
+              return Text("the counter value is ${counterController.counter}");
             }
-            if (snapShot.connectionState == ConnectionState.done) {
-              if (snapShot.data != null) {
-                users = snapShot.data as List;
-                return Center(
-                  child: Text("the user is ${users[0]}"),
+          ),
+          SizedBox(height: 10,),
+          IconButton(icon:Icon(Icons.add),onPressed: (){
+            counterController.increment();
+          },),
+          SizedBox(height: 10,),
+          IconButton(icon:Icon(Icons.remove),onPressed: (){
+            counterController.decrement();
+          },),
+          FutureBuilder(
+              future: FirebaseFirestoreService().getAllUsersInACollection(),
+              builder: (context, snapShot) {
+                if (snapShot.hasError) {
+                  return Center(
+                    child: Icon(Icons.warning),
+                  );
+                }
+                if (snapShot.connectionState == ConnectionState.done) {
+                  if (snapShot.data != null) {
+                    users = snapShot.data as List;
+                    return Center(
+                      child: Text("the user is ${users[0]}"),
+                    );
+                  } else {
+                    return Center(
+                      child: Icon(Icons.warning),
+                    );
+                  }
+                }
+                return SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(),
                 );
-              } else {
-                return Center(
-                  child: Icon(Icons.warning),
-                );
-              }
-            }
-            return SizedBox(
-              height: 50,
-              width: 50,
-              child: CircularProgressIndicator(),
-            );
-          }),
+              }),
+        ],
+      ),
     );
   }
 }
