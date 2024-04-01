@@ -1,6 +1,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:login/dashboard.dart';
 import 'package:login/edit_profile.dart';
 import 'package:login/list_view_page.dart';
@@ -11,6 +12,8 @@ import 'package:login/register.dart';
 import 'package:login/splash.dart';
 import 'package:login/users_list.dart';
 import 'package:login/utils/default_firebase_config.dart';
+
+import 'controller/counter_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +68,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(CounterController());
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

@@ -11,7 +11,6 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext dashboardContext) {
-    Get.put(CounterController());
     final CounterController counterController = Get.find();
     return Scaffold(
       appBar: AppBar(

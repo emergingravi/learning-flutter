@@ -1,33 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:login/controller/user_controller.dart';
 import 'package:login/model/user_model.dart';
-import 'package:login/service/firebase_firestore_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatefulWidget {
+
+class Profile extends StatelessWidget {
   const Profile({super.key});
   @override
-  State<Profile> createState() => _ProfileState();
-}
-
-class _ProfileState extends State<Profile> {
-  late String uid = "";
-  @override
-  void initState() {
-    getUserUidFromSharedPrefences();
-    super.initState();
-  }
-
-  void getUserUidFromSharedPrefences() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? id = prefs.getString('userId');
-    setState(() {
-      uid = id ?? '';
-      print('The user uid is $uid');
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final UserController userController = Get.put(UserController());
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(
@@ -41,62 +22,45 @@ class _ProfileState extends State<Profile> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: (uid.isNotEmpty)
-            ? FutureBuilder(
-                future: FirebaseFirestoreService()
-                    .getUserDetailsFromUseruId(uId: uid),
-                builder: (context, snapshot) {
-                  //if connection is established but  firebase returns an error
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text("error loading profile"),
-                      );
-                    }
-                    //if connection is established and firebase returns data
-                    if (snapshot.hasData) {
-                      final userModel = snapshot.data;
-                      return ListView(
-                        children: [
-                          ProfileImage(),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          BasicDetails(
-                            userModel: userModel,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          MenuWidgets(
-                            title: 'Settings',
-                            onPressed: () {
-                              print('Settings Clicked');
-                            },
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          MenuWidgets(
-                            title: 'Notifications',
-                            onPressed: () {
-                              print('Notifications Clicked');
-                            },
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          MenuWidgets(
-                            title: 'About App',
-                          ),
-                        ],
-                      );
-                    }
-                  }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                })
+        child: (userController.uid.value.isNotEmpty)
+            ? Obx(() {
+                return ListView(
+                          children: [
+                ProfileImage(),
+                SizedBox(
+                  height: 20,
+                ),
+                BasicDetails(
+                  userModel: userController.usermodel.value,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                MenuWidgets(
+                  title: 'Settings',
+                  onPressed: () {
+                    print('Settings Clicked');
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                MenuWidgets(
+                  title: 'Notifications',
+                  onPressed: () {
+                    print('Notifications Clicked');
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                MenuWidgets(
+                  title: 'About App',
+                ),
+                          ],
+                        );
+              }
+            )
             : Center(
                 child: CircularProgressIndicator(),
               ),

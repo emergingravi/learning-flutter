@@ -135,7 +135,7 @@ class _loginState extends State<Login> {
                                     else{
                                       print("login failure ");
                                     }
-                                    Navigator.of(context).pushReplacementNamed('/dashboard');
+                                    Navigator.of(context).pushReplacementNamed('/profile');
                                   }
                                   else{
                                     print('check once');
